@@ -47,7 +47,6 @@ export default {
 
       try{
         await api.put(`/todos/task-update/${todo.id}`, newTodo)
-        // this.getTodos()
       }catch(err){
         console.error(err)
       }
@@ -78,6 +77,7 @@ export default {
       this.todos.push(newTodo);
       try{
         await api.post("/todos/task-create", newTodo)
+        this.newTodo=""
         this.getTodos()
       }catch(err){
         console.error(err)
