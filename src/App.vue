@@ -6,12 +6,19 @@
       <input type="text" v-model="newTodo" placeholder="Add Todo">
       <button type="submit">Add</button>
     </form>
-    <ul>
-      <li v-for="(todo, index) in todos" :key="index">
-        <input type="checkbox" v-model="todo.completed" @change="markTodoComplete(todo)">
-        <span :style="{ textDecoration: todo.completed ? 'line-through' : 'none' }">{{ todo.task }}</span>
-        <button @click="removeTodo(todo,index)">X</button>
-      </li>
+    <ul v-for="(todo, index) in todos" :key="index">
+        <template v-if="!todo.editing">
+          <li @dblclick="todo.editing = true">
+          <input  type="checkbox" v-model="todo.completed" @change="markTodoComplete(todo)">
+          <span :style="{ textDecoration: todo.completed ? 'line-through' : 'none' }">{{ todo.task }}</span>
+          <button @click="removeTodo(todo,index)">X</button>
+        </li>                      
+        </template>
+        <template v-else>
+            <li>
+              <input type="text" v-model="todo.task" @blur="updateTodo(todo)" @keydown.enter="updateTodo(todo)" autofocus />
+            </li>          
+        </template>
     </ul>
   </div>
 </template>
@@ -32,6 +39,21 @@ export default {
     };
   },
   methods: {
+    async updateTodo(todo){
+      todo.editing = false;
+
+      console.log(todo)
+      const newTodo = { task: todo.task, completed: todo.completed };
+
+      try{
+        await api.put(`/todos/task-update/${todo.id}`, newTodo)
+        // this.getTodos()
+      }catch(err){
+        console.error(err)
+      }
+
+      
+    },
     async getTodos(){
       try{
         const response = await api.get('/todos/task-list/')
