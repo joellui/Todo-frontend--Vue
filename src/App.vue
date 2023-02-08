@@ -1,4 +1,5 @@
 <template>
+  <NavBar @userStatus="handleuserStatus" />
   <div>
     <h1>Todo List</h1>
     <form @submit.prevent="addTodo">
@@ -16,7 +17,13 @@
 </template>
 
 <script>
+import NavBar from "./components/NavBar";
+
 export default {
+  name: "app",
+  components: {
+    NavBar
+  },
   data() {
     return {
       newTodo: '',
